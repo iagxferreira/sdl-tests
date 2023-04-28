@@ -1,10 +1,16 @@
 #include "game.hpp"
 
+
+
 Game::Game(){}
 
 Game::~Game(){}
 
+SDL_Texture* playerTexture;
+SDL_Rect sourceRectangle, destinationRectangle;
+
 void Game::init(const char* title, int xpos, int ypos, int width, int height, bool fullscreen){
+
 	int flags = fullscreen ? SDL_WINDOW_FULLSCREEN : 0;	
 	if (SDL_Init(SDL_INIT_EVERYTHING) == 0) {
 		std::cout << "Subsystems initialized!..";
@@ -22,6 +28,9 @@ void Game::init(const char* title, int xpos, int ypos, int width, int height, bo
 	else {
 		isRunning = false;
 	}
+	SDL_Surface* surface = IMG_Load("assets/man.png");
+	playerTexture = SDL_CreateTextureFromSurface(renderer, surface);
+	SDL_FreeSurface(surface);
 }
 
 void Game::handleEvents(){
@@ -38,12 +47,17 @@ void Game::handleEvents(){
 
 void Game::update(){
 	count++;
+
+	destinationRectangle.w = 128;
+	destinationRectangle.h = 128;
+	destinationRectangle.x = count;
 	std::cout << count << std::endl;
 }
 
 void Game::render(){
 	SDL_RenderClear(renderer);
 	// This is where we would add stuffer to render
+	SDL_RenderCopy(renderer, playerTexture, NULL, &destinationRectangle);
 	SDL_RenderPresent(renderer);
 }
 
